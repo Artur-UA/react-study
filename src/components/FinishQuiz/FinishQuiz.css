@@ -1,0 +1,36 @@
+.FinishQuiz{
+    padding : 20px;
+    color : white;
+    border : 2px solid white;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin: 0 10px;
+    bottom: 10px;
+    margin: 10px;
+}
+
+.FinishQuiz ul {
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+}
+
+.FinishQuiz ul li i {
+ margin-left: 10px;
+}
+
+.FinishQuiz.success{
+    color: green;
+}
+
+.succes1{
+    color: green;
+}
+
+.FinishQuiz.err{
+    color: red;
+} 
+
+.err1{
+    color: red;
+} 

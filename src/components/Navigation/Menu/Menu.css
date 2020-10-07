@@ -1,0 +1,18 @@
+.Menu{
+    position: fixed;
+    top: 40px;
+    left: 40px;
+    font-size: 32px;
+    cursor: pointer;
+    z-index: 100;
+    transition: opacity, left .3s ease-in;
+    color: rgb(250, 239, 239);
+}
+
+.Menu:hover{
+    opacity: .7; /*прозрачность 70%*/
+}
+
+.Menu.open {
+    left: 320px;
+}

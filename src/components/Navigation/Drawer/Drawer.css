@@ -1,0 +1,42 @@
+.Drawer{
+    position: fixed;
+    left: 0; /*чтобы занимал всю высоту экрана*/
+    top: 0;
+    bottom: 0;
+    width: 80%;
+    max-width: 300px;
+    padding: 20px 10px;
+    box-sizing: border-box; /*чтобы не выходило наружу*/
+    background: white;
+    z-index: 90; /*чтобы под стрелкой было*/
+    transform: translateX(0px);
+    transition: transform .3s ease-in;
+    color: black;
+}
+
+.Drawer.close{
+    transform: translateX(-300px); /*закроет его на -300px, это максимальное значение max-width*/   
+}
+
+.Drawer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.Drawer ul li {
+    margin-bottom: 15px; /*пространство между ними*/
+}
+
+.Drawer ul li a{
+    color: purple;
+    font-size: 30px;
+    background: #fff;
+    text-decoration: none;
+    position: relative;
+    padding: 0 20px 10px 20px;
+    transition: opacity .3s;
+}
+.Drawer ul li a:hover, .active{
+    opacity: .7;
+} /*при нажатии миши весь экран бледнее на 70 процентов */

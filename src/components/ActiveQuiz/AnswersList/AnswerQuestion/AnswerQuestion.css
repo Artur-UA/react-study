@@ -1,0 +1,22 @@
+.AnswerQuestion {
+    border : 1px solid whitesmoke;
+    border-radius: 5px; 
+    padding : 5px 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: white
+}
+
+.AnswerQuestion:hover{
+    background: grey;
+    transition: background .1s ease-in-out;
+}
+
+.AnswerQuestion.success{
+    background: green;
+}
+
+
+.AnswerQuestion.err{
+    background: red;
+} 
