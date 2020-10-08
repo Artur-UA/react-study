@@ -26,7 +26,7 @@ const Input = (props) => {
             />
 
             {
-                isInvalid(props) ? <span>{props.errorMessage} || Please enter data</span> : null /*если есть проблема, выведет сообщение errorMessage или 'Please enter data.  Если все ок ничего не выведет */
+                isInvalid(props) ? <span>{props.errorMessage || 'Please enter data'}</span> : null /*если есть проблема, выведет сообщение errorMessage или 'Please enter data.  Если все ок ничего не выведет */
             }
             
         </div>
