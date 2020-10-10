@@ -13,10 +13,19 @@ const Select = props => {
                 value={props.value}
                 onChange={props.onChange}
             >
-            {props.options.map((option, index) => {
-                
+            {props.options.map((option, index) => { //в самом селекте будет набор различных опций 
+                return (
+                    <option
+                        key={index + option.value}
+                        value={option.value}
+                    >
+                        {option.text}
+                    </option>
+                )
             })}
             </select>
         </div>
     )
 }
+
+export default Select;

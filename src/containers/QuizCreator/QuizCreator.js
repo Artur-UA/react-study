@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import './QuizCreator.css'
 import Button from '../../components/UI/Button/Button'
 import Input from '../../components/UI/Input/Input'
-import {createControl} from '../../form/formQuestion/formQuestion'
+import {createControl, validate, validateForm} from '../../form/formQuestion/formQuestion'
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary'
+import Select from '../../components/UI/Select/Select'
 
 function createOption(number) { //для создания вариантов в тестах нужно. чтобы не дублировать код 
     return createControl({ //вопрос    //первым идет  набор конфигурация 
@@ -31,23 +32,64 @@ export default class QuizCreator extends Component {
 
     state = {
         quiz: [],//тест который мы будем создавать, может состоять из нескольких вопросовю поэтому мы создаем массив куда  положем их объект
-        formControls: newForm()
+        formControls: newForm(),
+        isFormValid : false, //для проверки сосотояния формы 
+        rightAnswerId: 1
     }
 
     onSubmit = (event) => { //чтобы не отправляло 
         event.preventDefault()
     }
 
-    onAddQuestion = () => {
+    onAddQuestion = (event) => {
+        event.preventDefault()
 
+        const quiz = this.state.quiz.concat() //вернет копию массива 
+        const index = quiz.length + 1
+        
+        const {question, answer1, answer2, answer3, answer4} = this.state.formControls //вытаскиваем для удобства их
+
+        const questionItem = { //создаем вопрос
+            question: question.value,
+            id: index,
+            rightAnswerId: this.state.rightAnswerId,
+            answers: [
+                { text : answer1.value, id : answer1.id},
+                { text : answer2.value, id : answer2.id},
+                { text : answer3.value, id : answer3.id},
+                { text : answer4.value, id : answer4.id},
+
+            ]
+        }
+        quiz.push(questionItem) //пушим его в quiz 
+        this.setState({
+            quiz, //добавляем это в quiz/  А после этого чистим все, чтобы дальше можно было создавать вопросы. для етого просто добавляем чистый state 
+            formControls: newForm(),
+            isFormValid : false, //для проверки сосотояния формы 
+            rightAnswerId: 1
+        })
     }
 
-    onCreateFinish = () => {
-
+    onCreateFinish = (event) => { //функция для кнопки окончание создавания теста 
+        event.preventDefault()
+        console.log('It\'s a good idea to learn React.')
+        console.log(this.state.quiz)
     }
 
-    onChange = (controlName, index) => {
+    onChange = (value, controlName)  => {
+        const formControls = {...this.state.formControls} //получаем копию данного state 
+        const control = {...formControls[controlName]} //абсолютно независимый обэект того инпута (password или email ) на котором действие onChange происходит
+        
+        control.touched = true //если мы попали в эту функцию, значит уже чтото изменилось
+        control.value = value
+        control.valid = validate(control.value, control.validation) //если поддерживает все условия, то true   \/ передаем value и условия валидации в функцию
 
+        formControls[controlName] = control
+
+        this.setState({
+            formControls,
+            isFormValid: validateForm(formControls)
+        })
     }
 
     renderInputs() {
@@ -71,7 +113,26 @@ export default class QuizCreator extends Component {
         })
     }
 
+    selectChange = event => {
+        this.setState({
+            rightAnswerId : +event.target.value//благодаря + приводим к  числу 
+        })
+    }
+
     render() {
+
+        const select = <Select
+            label="Choose the correct answer"
+            value={this.state.rightAnswerId}
+            onChange={this.selectChange}
+            options={[
+                {text: 1, value: 1},
+                {text: 2, value: 2},
+                {text: 3, value: 3},
+                {text: 4, value: 4},
+            ]}
+        />
+
         return (
             <div className='QuizCreator'>
                 <div>
@@ -80,11 +141,12 @@ export default class QuizCreator extends Component {
 
                         { this.renderInputs() }
                         
-                        <select></select>
+                        { select }
 
                         <Button
                             type='primary'
                             onClick={this.onAddQuestion}
+                            disabled = {!this.state.isFormValid}
                         >
                             Add question
                         </Button>
@@ -92,6 +154,7 @@ export default class QuizCreator extends Component {
                         <Button
                             type='success'
                             onClick={this.onCreateFinish}
+                            disabled = {this.state.quiz.length === 0}
                         >
                             Finish test creation
                         </Button>
