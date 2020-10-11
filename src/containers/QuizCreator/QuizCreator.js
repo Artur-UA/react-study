@@ -5,6 +5,7 @@ import Input from '../../components/UI/Input/Input'
 import {createControl, validate, validateForm} from '../../form/formQuestion/formQuestion'
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary'
 import Select from '../../components/UI/Select/Select'
+import axios from 'axios' // можно импортировать из axiosURL и тогда не нужно будет писать полное имя. но тут отсавил для примера 
 
 function createOption(number) { //для создания вариантов в тестах нужно. чтобы не дублировать код 
     return createControl({ //вопрос    //первым идет  набор конфигурация 
@@ -70,11 +71,38 @@ export default class QuizCreator extends Component {
         })
     }
 
-    onCreateFinish = (event) => { //функция для кнопки окончание создавания теста 
+    onCreateFinish =  async event => { //функция для кнопки окончание создавания теста  первый вариант через async/await
         event.preventDefault()
+
+        try {
+            const respon = await axios.post('https://react-test-project-12422.firebaseio.com/quizes.json', this.state.quiz) //можно без переменной, сразу писать await || отправляем на сервер пост запрос, (где в конце обьязательно пишем json чтобы сервер обработал ее в этот формат).  который передаст в базу данных созданные тестовые вопросы 
+            console.log (respon.data) //покажем что отправило на сервер 
+
+            this.setState({ //после успешной отправки остается активной клавиша. чтобы это убрать, обнуляем setState к дефолту
+                quiz: [],//тест который мы будем создавать, может состоять из нескольких вопросовю поэтому мы создаем массив куда  положем их объект
+                formControls: newForm(),
+                isFormValid : false, //для проверки сосотояния формы 
+                rightAnswerId: 1
+            })
+        }
+        catch (event) {
+            console.log(event)//если не ок покажет ошибку 
+        }
+    }
+
+/*    onCreateFinish = (event) => { //  второй вариант функции  \\\    функция для кнопки окончание создавания теста 
+        event.preventDefault()
+
+         axios.post('https://react-test-project-12422.firebaseio.com/quizes.json', this.state.quiz) //отправляем на сервер пост запрос, (где в конце обьязательно пишем json чтобы сервер обработал ее в этот формат).  который передаст в базу данных созданные тестовые вопросы 
+            .then(response => { //если все ок покажет запрос 
+                console.log(response)
+            })
+            .catch (error => console.log(error)) //если не ок покажет ошибку 
+
+
         console.log('It\'s a good idea to learn React.')
         console.log(this.state.quiz)
-    }
+    }*/
 
     onChange = (value, controlName)  => {
         const formControls = {...this.state.formControls} //получаем копию данного state 

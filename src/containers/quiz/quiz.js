@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import './quiz.css'
 import ActiveQuiz from '../../components/ActiveQuiz/AqtiveQuiz'
 import FinishQuiz from '../../components/FinishQuiz/FinishQuiz'
-//import '../../containers/quiz/quiz.css'
+import axios from '../../axios/axiosURL'
+import Loader from './../../components/UI/Loader/Loader'
 
 
 export default class Quiz extends Component {
@@ -11,7 +12,10 @@ export default class Quiz extends Component {
         finish: false,
         activeQuestion : 0,
         answerState : null, //хранит инфу о клике польхзователя. или правильно или ложь   получает { [id ответа ] : "success" ? "err" }
-        quiz: [//массив, потому что в нем список всех вопросов
+        loading: true,
+        quiz: []
+        /*старое наполнение массива. было заглушкой ранее
+        [//массив, потому что в нем список всех вопросов
             {//каждый вопрос будет объектом
                 question: "What color is the sky?",
                 rightAnswerId: 2,
@@ -34,7 +38,7 @@ export default class Quiz extends Component {
                     {text: 'Black', id: 4}
                 ]   
                 }
-            ]
+            ]*/
     }
 
     
@@ -111,8 +115,23 @@ export default class Quiz extends Component {
         return this.state.activeQuestion + 1 === this.state.quiz.length //если вопрос будет равен всем вопросам, тоесть послдений то будет тру. и в свою очередь запустит if 
     }
 
-    componentDidMount(){
-        console.log('quiz id =', this.props.match.params.id ) //убелимся что открывает нужный список вопросов
+    async componentDidMount(){ //загружает после прорисовки дом тесты с сенрвера 
+
+        try { //try стоит для отслеживания ошибок 
+            const responses = await axios.get(`quizes/${this.props.match.params.id}.json`) //адресс подставит нужный 'https://react-test-project-12422.firebaseio.com/quizes/ и криптографический ключ 
+
+            this.setState({
+                quiz: responses.data,
+                loading: false
+            })
+
+            //console.log('quiz id =', this.props.match.params.id ) //убелимся что открывает нужный список вопросов | покажет id 
+        } 
+        catch (e) {
+            console.log(e)
+        } 
+        
+    
     }
 
     render () {
@@ -122,21 +141,32 @@ export default class Quiz extends Component {
                 <h1>Test</h1>
 
                 {
-                    this.state.finish //грубо говоря как оператор if. тоесть если да, то сделает это 
+                    this.state.loading //если loading true тоесть не загрузулись данные покажет Loader  если false то загрузит данные с сервера и отрисует их 
+
+                    ? <Loader />
+
+                    :  //если loading false то будет еще выбор 
+                    
+                        this.state.finish //грубо говоря как оператор if. тоесть если да, то сделает это 
+                        
                         ?   <FinishQuiz
                                 result = {this.state.result}
                                 quiz = {this.state.quiz} // для того чтобы получили доступ в FinishQuiz к списку вопросов 
                                 onRetry = {this.retryIt}
                             /> //если окончил
+                            
                         : //если не окончил
                         <ActiveQuiz
-                    question={this.state.quiz[this.state.activeQuestion].question}
-                    answers={this.state.quiz[this.state.activeQuestion].answers} //[0] потому что массив/answers потому что вопрос
-                    onAnswerClick={this.onAnswerClick}
-                    quizLenght={this.state.quiz.length}
-                    answerNumber={this.state.activeQuestion + 1}
-                    state={this.state.answerState}
-                    />
+                        question={this.state.quiz[this.state.activeQuestion].question}
+                        answers={this.state.quiz[this.state.activeQuestion].answers} //[0] потому что массив/answers потому что вопрос
+                        onAnswerClick={this.onAnswerClick}
+                        quizLenght={this.state.quiz.length}
+                        answerNumber={this.state.activeQuestion + 1}
+                        state={this.state.answerState}
+                        />
+                }
+                {
+                    
                 }
                 </div>
             </div>

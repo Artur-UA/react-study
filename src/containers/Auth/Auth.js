@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './Auth.css'
 import Button from '../../components/UI/Button/Button'
 import Input from '../../components/UI/Input/Input'
+import axios from 'axios'
 
 function validateEmail(email) {  //обычная функция для проверли емайл. всята в гугл по запросу (email javascript regex)
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -40,12 +41,42 @@ export default class Auth extends Component {
         }
     }
 
-    logIn = () => {
+    logIn = async () => { //функция входа
 
+        const authData = { //объект который передаем
+            email: this.state.formControls.email.value,
+            password: this.state.formControls.password.value,
+            returnSecureToken: true
+        }
+
+        try {//куда передаем, находим это на сайте firebase  || во второй части передаем что именно отправим
+        
+            const responseAuth = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCPdBP_o_9fuMwHDSVygCzo_6GH7x6CeAA', authData)
+            
+            console.log(responseAuth.data)
+        }
+        catch (e) {
+            console.log(e)
+        }
     }
 
-    registration = () => {
+    registration = async () => { //функция регистрации
+
+        const authData = { //объект который передаем
+            email: this.state.formControls.email.value,
+            password: this.state.formControls.password.value,
+            returnSecureToken: true
+        }
+
+        try {//куда передаем, находим это на сайте firebase  || во второй части передаем что именно отправим
         
+            const responseAuth = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCPdBP_o_9fuMwHDSVygCzo_6GH7x6CeAA', authData)
+            
+            console.log(responseAuth.data)
+        }
+        catch (e) {
+            console.log(e)
+        }
     }
 
     onSubmit = (event) => { //чтобы не отправляло 
