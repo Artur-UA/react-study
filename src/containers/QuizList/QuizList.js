@@ -3,16 +3,17 @@ import { NavLink } from 'react-router-dom';
 import './QuizList.css'
 import axios from './../../axios/axiosURL'
 import Loader from './../../components/UI/Loader/Loader'
+import {connect} from 'react-redux'
 
-export default class QuizList extends Component {
+class QuizList extends Component {
 
-    state = { 
+    /*state = { //благодаря redux вынесли отсюда state b преобразовали его в props 
         quizes: [], //создали, чтобы добавлять сюда данные с бэка
         loading: true
-    }
+    }*/
     
     renderQuiz() {
-        return this.state.quizes.map((info) => {//инфа идет с бэка в функции componentDidMount добавляется в state и потом сюда добавляется
+        return this.props.quizes.map((info) => {//инфа идет с бэка в функции componentDidMount добавляется в state и потом сюда добавляется
             return(
                 <li
                     key={info.id} //key будет криптографический ключ
@@ -31,6 +32,7 @@ export default class QuizList extends Component {
             console.log(response)
         })
     }*/
+
 
     async componentDidMount() {//componentDidMount запускается когда уже зарендилось дерево. это нужно когда грузим с бэка 
         try { //для отловки ошибок try/catch используем
@@ -55,6 +57,7 @@ export default class QuizList extends Component {
         }
     }
 
+
     render() {
         return (
             <div className='QuizList'>
@@ -62,7 +65,7 @@ export default class QuizList extends Component {
                 <h1>Test List</h1> 
 
                 {
-                    this.state.loading 
+                    this.props.loading 
                     ? <Loader />
                     :   <ul>
                             {this.renderQuiz()}
@@ -74,3 +77,18 @@ export default class QuizList extends Component {
         )
     }
 }
+
+function mapStateToProps(state) {
+    return{
+        quizes: state.quizReducer.quiz, // quizes как оно будет называтся  \ state.quiz название которое получит из файла quizReducer 
+        loading: state.quizReducer.loading
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        fetchQuizs: () => dispatch (fetchQuizes()) //указываем что нужно загрузить с сервера
+    }
+}
+
+export default connect (mapStateToProps, mapDispatchToProps)(QuizList)
