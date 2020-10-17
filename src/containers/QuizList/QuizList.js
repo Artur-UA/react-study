@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import { NavLink } from 'react-router-dom';
 import './QuizList.css'
-import axios from './../../axios/axiosURL'
+//import axios from './../../axios/axiosURL' // убрал так как уже делаем через redux 
 import Loader from './../../components/UI/Loader/Loader'
 import {connect} from 'react-redux'
+import {fetchQuizes} from './../../redux/Action/actionsQuiz'
 
 class QuizList extends Component {
 
@@ -33,7 +34,7 @@ class QuizList extends Component {
         })
     }*/
 
-
+    /* установили redux b поэтому переписан код был зановo. этот код теперь в отдельном файле actionQuiz 
     async componentDidMount() {//componentDidMount запускается когда уже зарендилось дерево. это нужно когда грузим с бэка 
         try { //для отловки ошибок try/catch используем
             const respon = await axios.get('quizes.json') //quizes название таблицы в базе данных || должно было быть полное имя домена(как написано выше метод). но мы импортировали из axiosURL а не из оригинального axios/ b там внесли изменения и написали базовый url 
@@ -55,8 +56,11 @@ class QuizList extends Component {
         catch (event) {
             console.log(event)
         }
-    }
+    }*/
 
+    componentDidMount() { //redux 
+        this.props.fetchQuizs() //обращаемся к параметрам и вызываем этот метод 
+    }
 
     render() {
         return (
@@ -65,8 +69,8 @@ class QuizList extends Component {
                 <h1>Test List</h1> 
 
                 {
-                    this.props.loading 
-                    ? <Loader />
+                    this.props.loading && this.props.loading.length !== 0
+                    ? <Loader /> //показывает точки, которые имитируют загрузку с сервера. 
                     :   <ul>
                             {this.renderQuiz()}
                         </ul>
@@ -80,14 +84,14 @@ class QuizList extends Component {
 
 function mapStateToProps(state) {
     return{
-        quizes: state.quizReducer.quiz, // quizes как оно будет называтся  \ state.quiz название которое получит из файла quizReducer 
-        loading: state.quizReducer.loading
+        quizes: state.quiz.quizs, // quizes как оно будет называтся  \ state.quiz название которое получит из файла rootReducer/ там мы можем quiz переименовать на что угодно 
+        loading: state.quiz.loading
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        fetchQuizs: () => dispatch (fetchQuizes()) //указываем что нужно загрузить с сервера
+        fetchQuizs: () => dispatch(fetchQuizes()) //указываем что нужно загрузить с сервера
     }
 }
 

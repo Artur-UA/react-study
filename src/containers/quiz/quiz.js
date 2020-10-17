@@ -2,18 +2,22 @@ import React, {Component} from 'react';
 import './quiz.css'
 import ActiveQuiz from '../../components/ActiveQuiz/AqtiveQuiz'
 import FinishQuiz from '../../components/FinishQuiz/FinishQuiz'
-import axios from '../../axios/axiosURL'
+//import axios from '../../axios/axiosURL' // из-за redux стало не нужно
 import Loader from './../../components/UI/Loader/Loader'
+import {connect} from 'react-redux'
+import {fetchTestsById, quizAnswerClick} from './../../redux/Action/actionsQuiz'
 
 
-export default class Quiz extends Component {
-    state = {
+class Quiz extends Component {
+    /*state = {
+         записан в общий state 
         result : {}, // {[id]} : success err  будем писать ключ(id) элемента и значение отвтеа 
         finish: false,
         activeQuestion : 0,
         answerState : null, //хранит инфу о клике польхзователя. или правильно или ложь   получает { [id ответа ] : "success" ? "err" }
         loading: true,
         quiz: []
+        */
         /*старое наполнение массива. было заглушкой ранее
         [//массив, потому что в нем список всех вопросов
             {//каждый вопрос будет объектом
@@ -38,10 +42,10 @@ export default class Quiz extends Component {
                     {text: 'Black', id: 4}
                 ]   
                 }
-            ]*/
-    }
+            ]
+    }*/
 
-    
+    /* сделали благодаря redux 
     onAnswerClick = (answerId) => {
 
         if(this.state.answerState) { //чтобы при двойном нажатии на правильный ответ на засчитывало в правильный ответ и следующий вопрос 
@@ -100,7 +104,7 @@ export default class Quiz extends Component {
                 result : results //в setstate запишем теперь ответ с переменной results
             })
         }
-    }
+    }*/
 
     retryIt = () => { //просто ставим стейт в дефолт
         this.setState({
@@ -115,6 +119,7 @@ export default class Quiz extends Component {
         return this.state.activeQuestion + 1 === this.state.quiz.length //если вопрос будет равен всем вопросам, тоесть послдений то будет тру. и в свою очередь запустит if 
     }
 
+    /* переписал на redux 
     async componentDidMount(){ //загружает после прорисовки дом тесты с сенрвера 
 
         try { //try стоит для отслеживания ошибок 
@@ -130,46 +135,68 @@ export default class Quiz extends Component {
         catch (e) {
             console.log(e)
         } 
-        
-    
+    }*/
+
+    componentDidMount() { //redux 
+        this.props.fetchTestsById(this.props.match.params.id) //обращаемся к параметрам и вызываем этот метод || this.props.match.params.id  покажет нам id 
     }
 
     render () {
+        
+        console.log(this.props)
         return (
             <div className='Quizs'>
                 <div className='QuizWrapper'>
                 <h1>Test</h1>
 
+
                 {
-                    this.state.loading //если loading true тоесть не загрузулись данные покажет Loader  если false то загрузит данные с сервера и отрисует их 
+                    this.props.loading || !this.props.quiz//если loading true тоесть не загрузулись данные покажет Loader  если false то загрузит данные с сервера и отрисует их 
 
                     ? <Loader />
 
                     :  //если loading false то будет еще выбор 
                     
-                        this.state.finish //грубо говоря как оператор if. тоесть если да, то сделает это 
+                        this.props.finish //грубо говоря как оператор if. тоесть если да, то сделает это 
                         
                         ?   <FinishQuiz
-                                result = {this.state.result}
-                                quiz = {this.state.quiz} // для того чтобы получили доступ в FinishQuiz к списку вопросов 
+                                result = {this.props.result}
+                                quiz = {this.props.quiz} // для того чтобы получили доступ в FinishQuiz к списку вопросов 
                                 onRetry = {this.retryIt}
                             /> //если окончил
                             
                         : //если не окончил
                         <ActiveQuiz
-                        question={this.state.quiz[this.state.activeQuestion].question}
-                        answers={this.state.quiz[this.state.activeQuestion].answers} //[0] потому что массив/answers потому что вопрос
-                        onAnswerClick={this.onAnswerClick}
-                        quizLenght={this.state.quiz.length}
-                        answerNumber={this.state.activeQuestion + 1}
-                        state={this.state.answerState}
+                            question={this.props.quiz[this.props.activeQuestion].question}
+                            answers={this.props.quiz[this.props.activeQuestion].answers} //[0] потому что массив/answers потому что вопрос
+                            onAnswerClick={this.onAnswerClick}
+                            quizLenght={this.props.quiz.length}
+                            answerNumber={this.props.activeQuestion + 1}
+                            state={this.props.answerState}
                         />
-                }
-                {
-                    
                 }
                 </div>
             </div>
         )
     } 
 }
+
+function mapStateToProps(state) {
+    return{
+        result: state.quiz.result, // {[id]} : success err  будем писать ключ(id) элемента и значение отвтеа 
+        finish: state.quiz.finish,
+        activeQuestion : state.quiz.activeQuestion,
+        answerState : state.quiz.answerState, //хранит инфу о клике польхзователя. или правильно или ложь   получает { [id ответа ] : "success" ? "err" }
+        quiz: state.quiz.quiz, //неопределен, чтобы загрузить данные с сервера   || первый quiz это то, как мы его должны называть на этой странице   \\ state.quiz.quiz это то как мы вытаскиваем с другого файла
+        loading: state.quiz.loading // один loading на две страницы, так как они одновременно не могут быть открыти(тоесть не пересекаются)
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        fetchTestsById: id => dispatch(fetchTestsById(id)),
+        quizAnswerClick: answerId => dispatch(quizAnswerClick(answerId))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Quiz)
