@@ -5,7 +5,7 @@ import FinishQuiz from '../../components/FinishQuiz/FinishQuiz'
 //import axios from '../../axios/axiosURL' // из-за redux стало не нужно
 import Loader from './../../components/UI/Loader/Loader'
 import {connect} from 'react-redux'
-import {fetchTestsById, quizAnswerClick} from './../../redux/Action/actionsQuiz'
+import {fetchTestsById, quizAnswerClick, retryQuiz} from './../../redux/Action/actionsQuiz'
 
 
 class Quiz extends Component {
@@ -106,6 +106,7 @@ class Quiz extends Component {
         }
     }*/
 
+    /*переписал в actionsQuiz
     retryIt = () => { //просто ставим стейт в дефолт
         this.setState({
             result : {}, 
@@ -113,11 +114,12 @@ class Quiz extends Component {
             activeQuestion : 0,
             answerState : null
         })
-    }
+    }*/
 
+    /* переписал в actionsQuiz
     isFinishQuestion() {
         return this.state.activeQuestion + 1 === this.state.quiz.length //если вопрос будет равен всем вопросам, тоесть послдений то будет тру. и в свою очередь запустит if 
-    }
+    }*/
 
     /* переписал на redux 
     async componentDidMount(){ //загружает после прорисовки дом тесты с сенрвера 
@@ -141,9 +143,12 @@ class Quiz extends Component {
         this.props.fetchTestsById(this.props.match.params.id) //обращаемся к параметрам и вызываем этот метод || this.props.match.params.id  покажет нам id 
     }
 
+    componentWillUnmount(){ //если вдруг не ответил на все вопросы. чтобы очистились ответы и нужно было начинать заново. 
+        this.props.retryQuiz()
+    }
     render () {
         
-        console.log(this.props)
+        //console.log(this.props)
         return (
             <div className='Quizs'>
                 <div className='QuizWrapper'>
@@ -162,14 +167,16 @@ class Quiz extends Component {
                         ?   <FinishQuiz
                                 result = {this.props.result}
                                 quiz = {this.props.quiz} // для того чтобы получили доступ в FinishQuiz к списку вопросов 
-                                onRetry = {this.retryIt}
+                                //onRetry = {this.retryIt} изменил 
+                                onRetry = {this.props.retryQuiz}
                             /> //если окончил
                             
                         : //если не окончил
                         <ActiveQuiz
                             question={this.props.quiz[this.props.activeQuestion].question}
                             answers={this.props.quiz[this.props.activeQuestion].answers} //[0] потому что массив/answers потому что вопрос
-                            onAnswerClick={this.onAnswerClick}
+                            //onAnswerClick={this.onAnswerClick} переписал нижу
+                            onAnswerClick={this.props.quizAnswerClick}
                             quizLenght={this.props.quiz.length}
                             answerNumber={this.props.activeQuestion + 1}
                             state={this.props.answerState}
@@ -195,7 +202,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         fetchTestsById: id => dispatch(fetchTestsById(id)),
-        quizAnswerClick: answerId => dispatch(quizAnswerClick(answerId))
+        quizAnswerClick: answerId => dispatch(quizAnswerClick(answerId)),
+        retryQuiz: () => dispatch(retryQuiz())
     }
 }
 

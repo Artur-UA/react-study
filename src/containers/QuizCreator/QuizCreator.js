@@ -6,6 +6,8 @@ import {createControl, validate, validateForm} from '../../form/formQuestion/for
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary'
 import Select from '../../components/UI/Select/Select'
 import axios from 'axios' // можно импортировать из axiosURL и тогда не нужно будет писать полное имя. но тут отсавил для примера 
+import {connect} from 'react-redux'
+
 
 function createOption(number) { //для создания вариантов в тестах нужно. чтобы не дублировать код 
     return createControl({ //вопрос    //первым идет  набор конфигурация 
@@ -29,10 +31,11 @@ function newForm() { //функция нужна для создания воп�
         answer4: createOption(4)
         }
 }
-export default class QuizCreator extends Component {
+class QuizCreator extends Component {
 
     state = {
-        quiz: [],//тест который мы будем создавать, может состоять из нескольких вопросовю поэтому мы создаем массив куда  положем их объект
+        // quiz добавлен в глоабный state (createQuiz)
+        //quiz: [],//тест который мы будем создавать, может состоять из нескольких вопросовю поэтому мы создаем массив куда  положем их объект
         formControls: newForm(),
         isFormValid : false, //для проверки сосотояния формы 
         rightAnswerId: 1
@@ -182,7 +185,7 @@ export default class QuizCreator extends Component {
                         <Button
                             type='success'
                             onClick={this.onCreateFinish}
-                            disabled = {this.state.quiz.length === 0}
+                            disabled = {this.props.quiz.length === 0}
                         >
                             Finish test creation
                         </Button>
@@ -192,3 +195,19 @@ export default class QuizCreator extends Component {
         )
     }
 }
+
+function mapStateToProps(state){
+    return{
+        quiz: state.quizCreator.quiz
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return{
+
+        createAdQuestion: (item) => dispatch(createAdQuestion(item)), // через redux сделал функцию onAddQuestion
+        finishCreateQuiz: () => dispatch(finishCreateQuiz())//onCreateFinish
+    }
+}
+
+export default connect (mapStateToProps, mapDispatchToProps)(QuizCreator)

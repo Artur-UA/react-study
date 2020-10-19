@@ -1,4 +1,6 @@
-import {FETCH_QUIZ_START, FETCH_QUIZ_FINISH, FETCH_QUIZ_ERROR, FETCH_QUIZ_TEST_ID_FINISH} from './../Action/actionTypes'
+import {FETCH_QUIZ_START, FETCH_QUIZ_FINISH, FETCH_QUIZ_ERROR, FETCH_QUIZ_TEST_ID_FINISH, 
+    QUIZ_TEST_SET_STATE, QUIZ_TEST_SET_STATE_FINISH, QUIZ_TEST_SET_STATE_NEXT_QUESTION,
+    QUIZ_TEST_SET_STATE_DEFAULT} from './../Action/actionTypes'
 
 const initialState = {
     //state из quizList
@@ -30,16 +32,45 @@ export default function quizReducer(state = initialState, action) {
         }
         case FETCH_QUIZ_ERROR: {
             return {
-                ...state, 
+                ...state, //разворачиваем state
                 loading: false, //убираем загрузчик
                 error: action.error
             }
         }
         case FETCH_QUIZ_TEST_ID_FINISH: {
             return {
-                ...state,
+                ...state,//разворачиваем state
                 loading: false, //отключает дизайн загрузки
                 quiz: action.quiz
+            }
+        }
+        case QUIZ_TEST_SET_STATE: {
+            return{
+                ...state,//разворачиваем state
+                answerState:action.answerState,
+                result: action.result
+            }
+        }
+        case QUIZ_TEST_SET_STATE_FINISH: {
+            return{
+                ...state,//разворачиваем state
+                finish: true
+            }
+        }
+        case QUIZ_TEST_SET_STATE_NEXT_QUESTION: {
+            return{
+                ...state, //разворачиваем state
+                activeQuestion : action.questionNumber,//action.questionNumber принимаем из actionsQuiz 
+                answerState : null
+            }
+        }
+        case QUIZ_TEST_SET_STATE_DEFAULT: {
+            return{
+                ...state,
+                result : {}, 
+                finish: false,
+                activeQuestion : 0,
+                answerState : null
             }
         }
         default:

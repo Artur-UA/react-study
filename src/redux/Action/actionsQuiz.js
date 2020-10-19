@@ -1,7 +1,26 @@
 //import reduxThunk from 'redux-thunk'
 import axios from './../../axios/axiosURL' 
-import {FETCH_QUIZ_ERROR, FETCH_QUIZ_FINISH, FETCH_QUIZ_START, FETCH_QUIZ_TEST_ID_FINISH} from './actionTypes'
+import {FETCH_QUIZ_ERROR, FETCH_QUIZ_FINISH, FETCH_QUIZ_START, FETCH_QUIZ_TEST_ID_FINISH, 
+    QUIZ_TEST_SET_STATE, QUIZ_TEST_SET_STATE_FINISH, QUIZ_TEST_SET_STATE_NEXT_QUESTION,
+    QUIZ_TEST_SET_STATE_DEFAULT} from './actionTypes'
 
+function isFinishQuestion(state) { //перетащил с quiz.js
+    return state.activeQuestion + 1 === state.quiz.length //если вопрос будет равен всем вопросам, тоесть послдений то будет тру. и в свою очередь запустит if 
+}
+
+export function retryQuiz (){ //функция (retryIt) просто ставим стейт в дефолт
+    return{
+        type: QUIZ_TEST_SET_STATE_DEFAULT,
+        
+    }
+    /*
+    this.setState({
+        result : {}, 
+        finish: false,
+        activeQuestion : 0,
+        answerState : null
+    })*/
+}
 
 export function fetchQuizes() {//для папки quizList
     return async (dispatch) => {
@@ -63,7 +82,8 @@ export function quizAnswerClick(answerId){ //без async потому что р
             if(!results[question.id]) {  //если в резалт ансвер что-то лежит, то значит он уже отвечал ранее неправильно, в нашем случае наоборот
                 results[question.id] = 'success' //если пусто, значит в объект переменной results запишем ключ(id) вопроса и значение success
             }
-
+            
+            dispatch(quizSetState({[answerId] : 'success'}, results)) //чуть ниже описано что и откуда мы берем || грубо говоря это setState
             /* изменили в соответствии с redax 
             this.setState({ //меняем answerState нсли правильно ответил чтобы стилизовать кнопку
                 answerState : {[answerId] : 'success'},
@@ -72,9 +92,10 @@ export function quizAnswerClick(answerId){ //без async потому что р
             })*/
 
             const timeout = window.setTimeout(() => {
-                if (this.isFinishQuestion()) { //ответили на все вопросы то отключит.
+                if (isFinishQuestion(state)) { //ответили на все вопросы то отключит.  || state берем из const выше 
                     console.log ("Finish")
 
+                    dispatch(quizSetStateFinish())//переписал код ниже
                     /* изменили в соответствии с redax 
                     this.setState({
                         finish : true
@@ -82,8 +103,8 @@ export function quizAnswerClick(answerId){ //без async потому что р
 
                 } else {//если еще остались вопросы, то переключит на следующий
 
-                /* изменили в соответствии с redax 
-
+                dispatch(quizTestSetStateNextQuestion(state.activeQuestion + 1))
+                /* изменили в соответствии с redax
                     this.setState({ //при нажатии меняем setState на +1 что в свою очередь меняет вопрос в rendere. 
                         activeQuestion : this.state.activeQuestion + 1,
 
@@ -100,6 +121,8 @@ export function quizAnswerClick(answerId){ //без async потому что р
 
             results[question.id] = 'err' //в объект с ключем(id) вопроса, значение запишем err. так как тут попадают только неправильные ответы 
 
+
+            dispatch(quizSetState({[answerId] : 'err'}, results)) //чуть ниже описано что и откуда мы берем || грубо говоря это setState
             /* изменили в соответствии с redax 
             this.setState({ //меняем answerState нсли правильно ответил чтобы стилизовать
                 answerState : {[answerId] : 'err'},
@@ -111,6 +134,26 @@ export function quizAnswerClick(answerId){ //без async потому что р
     }
 }
 
+export function quizTestSetStateNextQuestion(questionNumber) {
+    return{
+        type: QUIZ_TEST_SET_STATE_NEXT_QUESTION,
+        questionNumber
+    }
+}
+
+export function quizSetState(answerState, result) {
+    return {
+        type: QUIZ_TEST_SET_STATE,
+        answerState, 
+        result
+    }
+}
+
+export function quizSetStateFinish() {
+    return{
+        type:QUIZ_TEST_SET_STATE_FINISH
+    }
+}
 export function fetchQuizStart(){
     return{
         type: FETCH_QUIZ_START
