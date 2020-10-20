@@ -5,9 +5,9 @@ import Input from '../../components/UI/Input/Input'
 import {createControl, validate, validateForm} from '../../form/formQuestion/formQuestion'
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary'
 import Select from '../../components/UI/Select/Select'
-import axios from 'axios' // можно импортировать из axiosURL и тогда не нужно будет писать полное имя. но тут отсавил для примера 
+//import axios from 'axios' // можно импортировать из axiosURL и тогда не нужно будет писать полное имя. но тут отсавил для примера 
 import {connect} from 'react-redux'
-
+import {createAdQuestion, finishCreateQuiz} from './../../redux/Action/actionQuizCreator'
 
 function createOption(number) { //для создания вариантов в тестах нужно. чтобы не дублировать код 
     return createControl({ //вопрос    //первым идет  набор конфигурация 
@@ -45,6 +45,34 @@ class QuizCreator extends Component {
         event.preventDefault()
     }
 
+    onAddQuestion = (event) => { //чуть нижу код до redax 
+        event.preventDefault()
+        
+        const {question, answer1, answer2, answer3, answer4} = this.state.formControls //вытаскиваем для удобства их
+
+        const questionItem = { //создаем вопрос
+            question: question.value,
+            id: this.props.quiz.length + 1,
+            rightAnswerId: this.state.rightAnswerId,
+            answers: [
+                { text : answer1.value, id : answer1.id},
+                { text : answer2.value, id : answer2.id},
+                { text : answer3.value, id : answer3.id},
+                { text : answer4.value, id : answer4.id},
+
+            ]
+        }
+
+        this.props.createAdQuestion(questionItem)// это отправляется в reducer / quizCreatorreducer
+
+        this.setState({
+            formControls: newForm(),
+            isFormValid : false, //для проверки сосотояния формы 
+            rightAnswerId: 1
+        })
+    }
+
+    /* переписал с помощью redax выше 
     onAddQuestion = (event) => {
         event.preventDefault()
 
@@ -72,8 +100,20 @@ class QuizCreator extends Component {
             isFormValid : false, //для проверки сосотояния формы 
             rightAnswerId: 1
         })
+    }*/
+
+    onCreateFinish = event => { //функция для кнопки окончание создавания теста  первый вариант через async/await
+        event.preventDefault()
+
+            this.setState({ //после успешной отправки остается активной клавиша. чтобы это убрать, обнуляем setState к дефолту
+                formControls: newForm(),
+                isFormValid : false, //для проверки сосотояния формы 
+                rightAnswerId: 1
+            })
+        this.props.finishCreateQuiz()
     }
 
+    /*  переписал с помощью redax выше 
     onCreateFinish =  async event => { //функция для кнопки окончание создавания теста  первый вариант через async/await
         event.preventDefault()
 
@@ -91,7 +131,7 @@ class QuizCreator extends Component {
         catch (event) {
             console.log(event)//если не ок покажет ошибку 
         }
-    }
+    }*/
 
 /*    onCreateFinish = (event) => { //  второй вариант функции  \\\    функция для кнопки окончание создавания теста 
         event.preventDefault()
