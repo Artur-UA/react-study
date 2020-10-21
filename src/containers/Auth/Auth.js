@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import './Auth.css'
 import Button from '../../components/UI/Button/Button'
 import Input from '../../components/UI/Input/Input'
-import axios from 'axios'
+//import axios from 'axios'
 import {connect} from 'react-redux'
+import authReducer from './../../redux/Action/actionAuth'
 
 function validateEmail(email) {  //обычная функция для проверли емайл. всята в гугл по запросу (email javascript regex)
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -42,6 +43,17 @@ class Auth extends Component {
         }
     }
 
+    logIn = () => { //функция входа
+
+        this.props.auth(
+            this.state.formControls.email.value,//email
+            this.state.formControls.password.value,//password
+            true//returnSecureToken
+        )
+
+    }
+
+    /* переписал в redux 
     logIn = async () => { //функция входа
 
         const authData = { //объект который передаем
@@ -59,8 +71,18 @@ class Auth extends Component {
         catch (e) {
             console.log(e)
         }
+    }*/
+
+    registration = () => {
+        this.props.auth(
+            this.state.formControls.email.value,//email
+            this.state.formControls.password.value,//password
+            false//returnSecureToken
+        )
     }
 
+
+    /* переписал в redux 
     registration = async () => { //функция регистрации
 
         const authData = { //объект который передаем
@@ -78,7 +100,7 @@ class Auth extends Component {
         catch (e) {
             console.log(e)
         }
-    }
+    }*/
 
     onSubmit = (event) => { //чтобы не отправляло 
         event.preventDefault()
@@ -185,7 +207,7 @@ class Auth extends Component {
 
 function mapDispatchToProps(dispatch){
     return{
-        auth: (email, password, isLogin) => dispatch (auth(email, password, isLogin))
+        auth: (email, password, isLogin) => dispatch (authReducer(email, password, isLogin))
     }
 }
 export default connect (null, mapDispatchToProps)(Auth)
