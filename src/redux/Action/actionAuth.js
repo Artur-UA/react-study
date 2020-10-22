@@ -49,8 +49,22 @@ export function autoLogOut(time) { //time это data.expiresIn
     }
 }
 
-export function autoLogin(){
-    
+export function autoLogin(){ //проверка на автоЛогин
+    return dispatch => {
+        const token = localStorage.getItem('token') //проверка на наличие в хранилище токена 
+        if (!token){
+            dispatch(LogOut())
+        } else {
+            const expirationDate = new Date(localStorage.getItem('expirationDate'))//проверка на наличие в хранилище переменной времени до которого  сессия будет активна  \\ new Date () оборачиваем чтобы перевести все в javaScript-овая дату 
+            
+            if (expirationDate <= new Date()) { //expirationDate <= new Date() если наша дата там будет меньше даты ненешней(тоесть прошел час после регистрации), то значит автоматом вылогиниваем)
+                dispatch(LogOut())
+            } else { // если ок по времени, тогда 
+                dispatch(authSuccess(token)) //запуск функции с токеном 
+                dispatch(autoLogOut((expirationDate.getTime() - new Date().getTime()) / 1000))//запуск функции которая обновит время, сколько осталось до операции АвтоЛогин
+            }
+        }
+    }
 }
 
 export function LogOut() {

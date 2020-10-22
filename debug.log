@@ -8,3 +8,4 @@
 [1020/211615.776:ERROR:directory_reader_win.cc(43)] FindFirstFile: Не вдалося знайти вказаний шлях. (0x3)
 [1021/145206.178:ERROR:directory_reader_win.cc(43)] FindFirstFile: Не вдалося знайти вказаний шлях. (0x3)
 [1021/200538.508:ERROR:directory_reader_win.cc(43)] FindFirstFile: Не вдалося знайти вказаний шлях. (0x3)
+[1022/142434.556:ERROR:directory_reader_win.cc(43)] FindFirstFile: Не вдалося знайти вказаний шлях. (0x3)

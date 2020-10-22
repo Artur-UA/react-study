@@ -8,7 +8,6 @@ import QuizList from './containers/QuizList/QuizList'
 import {connect} from 'react-redux'
 import Logout from './components/LogOut/LogOut'
 import {autoLogin} from './redux/Action/actionAuth'
-//import { render } from '@testing-library/react';
 
 class App extends Component {
 
@@ -23,7 +22,7 @@ class App extends Component {
       <Switch>
         <Route path='/auth' component={Auth} />
         <Route path='/quiz/:id' component={Quiz} />
-        <Route path='/' component={QuizList} />
+        <Route path='/' exact component={QuizList} />
         <Redirect to = '/' />
       </Switch>
     )
@@ -33,8 +32,8 @@ class App extends Component {
         <Switch>
           <Route path='/quiz-creator' component={QuizCreator} />
           <Route path='/quiz/:id' component={Quiz} />
-          <Route path='/' component={QuizList} />
           <Route path='/logout' component={Logout} />
+          <Route path='/' exact component={QuizList} />
           <Redirect to = '/' />
         </Switch>
       )
@@ -50,7 +49,7 @@ class App extends Component {
 
 function mapStateToProps(state){ //проверка на зарегестрированость 
   return{
-    isAuthenticated: state.auth.token
+    isAuthenticated: !!state.auth.token
   }
 } 
 
