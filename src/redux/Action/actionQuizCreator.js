@@ -8,7 +8,7 @@ export function createAdQuestion(item) {
     }
 }
 
-export function resetQuizCreation() {//чтобы очистилось поле, после отправки теста на сервер 
+export function resetQuizCreation() {
     return {
         type: QUIZ_CREATOR_RESET
 
@@ -16,8 +16,8 @@ export function resetQuizCreation() {//чтобы очистилось поле,
 }
 
 export function finishCreateQuiz() {
-    return async (dispatch, getState) => { //getState нужен чтобы получить state 
-        await axios.post('quizes.json', getState().quizCreator.quiz) //можно без переменной, сразу писать await || отправляем на сервер пост запрос, (где в конце обьязательно пишем json чтобы сервер обработал ее в этот формат).  который передаст в базу данных созданные тестовые вопросы 
+    return async (dispatch, getState) => { 
+        await axios.post('quizes.json', getState().quizCreator.quiz)  
         dispatch(resetQuizCreation())
     }
 }

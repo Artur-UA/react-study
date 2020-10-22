@@ -16,8 +16,6 @@ class App extends Component {
   }
 
   render() {
-
-//если не зареганы, не будет роута для создания тестов. а если зареганы пропадет роут про регистрацию, но появится роут про вылогинивание 
     let routes = (
       <Switch>
         <Route path='/auth' component={Auth} />
@@ -47,7 +45,7 @@ class App extends Component {
 }
 }
 
-function mapStateToProps(state){ //проверка на зарегестрированость 
+function mapStateToProps(state){ 
   return{
     isAuthenticated: !!state.auth.token
   }

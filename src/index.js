@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import {BrowserRouter} from 'react-router-dom' //чтобы было несколько страниц
-import {createStore, compose, applyMiddleware} from 'redux' //для создания store // для Redux devTools // импортим для  middleware
-import {Provider} from 'react-redux' // чтобы работали вместе react-redux
-import rootReducer from './redux/Reducers/rootReducer.js' //импортим все reducers 
+import {BrowserRouter} from 'react-router-dom' 
+import {createStore, compose, applyMiddleware} from 'redux' 
+import {Provider} from 'react-redux' 
+import rootReducer from './redux/Reducers/rootReducer.js' 
 import thunk from 'redux-thunk'
 
 const composeEnhancers =

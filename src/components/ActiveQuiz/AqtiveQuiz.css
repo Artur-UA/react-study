@@ -13,7 +13,7 @@
 
 .Question {
     display: flex;
-    justify-content: space-between;/*раскинет в разные угли на одной высоте*/   
+    justify-content: space-between;
     margin-bottom: 15px;
     bottom: 0px;
 }

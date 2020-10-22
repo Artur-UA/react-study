@@ -10,7 +10,7 @@ const AnswersList = props => (
                     key={index}
                     answers={answers}
                     onAnswerClick={props.onAnswerClick}
-                    state={props.state ? props.state[answers.id] : null} //props.state - проверка есть ли чтото в state //props.state[answers.id] достает все что там есть и идем дальше  
+                    state={props.state ? props.state[answers.id] : null} 
                 />
             )
         })}

@@ -8,5 +8,5 @@
 .Layout main {
     display : flex;
     flex-direction : column;
-    flex-grow : 1; /* тег main занимает всю доступную высоту */
+    flex-grow : 1; 
 }

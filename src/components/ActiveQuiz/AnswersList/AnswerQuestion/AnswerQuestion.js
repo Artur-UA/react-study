@@ -5,7 +5,7 @@ const AnswerQuestion = (props) => {
     
     const classes = ['AnswerQuestion']
 
-    if (props.state) { //данное состояние будет характерно дишь для этого item 
+    if (props.state) { 
         classes.push([props.state])
     }
     

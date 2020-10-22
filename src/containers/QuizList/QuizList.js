@@ -1,65 +1,30 @@
 import React, {Component} from 'react';
 import { NavLink } from 'react-router-dom';
 import './QuizList.css'
-//import axios from './../../axios/axiosURL' // убрал так как уже делаем через redux 
 import Loader from './../../components/UI/Loader/Loader'
 import {connect} from 'react-redux'
 import {fetchQuizes} from './../../redux/Action/actionsQuiz'
 
 class QuizList extends Component {
 
-    /*state = { //благодаря redux вынесли отсюда state b преобразовали его в props 
-        quizes: [], //создали, чтобы добавлять сюда данные с бэка
-        loading: true
-    }*/
     
     renderQuiz() {
-        return this.props.quizes.map((info) => {//инфа идет с бэка в функции componentDidMount добавляется в state и потом сюда добавляется
+        return this.props.quizes.map((info) => {
             return(
                 <li
-                    key={info.id} //key будет криптографический ключ
+                    key={info.id} 
                 >
                     <NavLink to={'/quiz/' + info.id}>
                         {info.name}
                     </NavLink>
-                </li> //info это то что будет в state(тоесть то что придет с бєка)
+                </li> 
             )
         })
     }
 
-/*    componentDidMount() { //для примера как писать
-        axios.get('https://react-test-project-12422.firebaseio.com/quiz.json') //отправляем на сервер гет запрос, (где в конце обьязательно пишем json чтобы сервер обработал ее в этот формат).
-        .then(response => { //обратно получаем ответ и выводим его в консоль 
-            console.log(response)
-        })
-    }*/
 
-    /* установили redux b поэтому переписан код был зановo. этот код теперь в отдельном файле actionQuiz 
-    async componentDidMount() {//componentDidMount запускается когда уже зарендилось дерево. это нужно когда грузим с бэка 
-        try { //для отловки ошибок try/catch используем
-            const respon = await axios.get('quizes.json') //quizes название таблицы в базе данных || должно было быть полное имя домена(как написано выше метод). но мы импортировали из axiosURL а не из оригинального axios/ b там внесли изменения и написали базовый url 
-            console.log (respon.data)//выведем присланные данные в конслоь 
-
-            const quiz = [] //создан для добавление сюда инфы с бэка 
-
-            Object.keys(respon.data).forEach((key, index) => {//пройдемся по данным. вытащим все ключи. благодаря методу forEach переберем их 
-                quiz.push({
-                    id: key, //key криптографический ключ
-                    name: `Test # ${index + 1}`
-                })
-            }) 
-            this.setState({
-                quizes: quiz,
-                loading: false
-            })
-        }
-        catch (event) {
-            console.log(event)
-        }
-    }*/
-
-    componentDidMount() { //redux 
-        this.props.fetchQuizs() //обращаемся к параметрам и вызываем этот метод 
+    componentDidMount() { 
+        this.props.fetchQuizs() 
     }
 
     render() {
@@ -70,7 +35,7 @@ class QuizList extends Component {
 
                 {
                     this.props.loading && this.props.loading.length !== 0
-                    ? <Loader /> //показывает точки, которые имитируют загрузку с сервера. 
+                    ? <Loader /> 
                     :   <ul>
                             {this.renderQuiz()}
                         </ul>
@@ -84,14 +49,14 @@ class QuizList extends Component {
 
 function mapStateToProps(state) {
     return{
-        quizes: state.quiz.quizs, // quizes как оно будет называтся  \ state.quiz название которое получит из файла rootReducer/ там мы можем quiz переименовать на что угодно 
+        quizes: state.quiz.quizs,  
         loading: state.quiz.loading
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        fetchQuizs: () => dispatch(fetchQuizes()) //указываем что нужно загрузить с сервера
+        fetchQuizs: () => dispatch(fetchQuizes()) 
     }
 }
 

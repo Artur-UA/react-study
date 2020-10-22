@@ -14,7 +14,7 @@ export default function authReducer (state = initialState, action){
         case AUTH_LOGOUT:
             return{
                 ...state,
-                token: null //обнулит токен, так как прошло время 
+                token: null 
             }
         default: 
             return state

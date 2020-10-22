@@ -11,7 +11,7 @@ const Menu = (props) => {
     ]
 
     if(props.isOpen) {
-        classes.push('fa-times')//добавим два класса
+        classes.push('fa-times')
         classes.push('open')
     } else {
         classes.push('fa-bars')

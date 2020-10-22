@@ -13,7 +13,7 @@ const Select = props => {
                 value={props.value}
                 onChange={props.onChange}
             >
-            {props.options.map((option, index) => { //в самом селекте будет набор различных опций 
+            {props.options.map((option, index) => { 
                 return (
                     <option
                         key={index + option.value}

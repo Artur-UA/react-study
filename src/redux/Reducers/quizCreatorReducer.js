@@ -9,10 +9,10 @@ export default function quizCreatorReducer(state = initialState, action){
         case QUIZ_CREATOR_QUESTION: {
             return {
                 ...state,
-                quiz: [...state.quiz, action.item] //чтобы не мутировал state, вставляем вместо него развернутый state, а также инфу которую мы передаем action.item
+                quiz: [...state.quiz, action.item]
             }
         }
-        case QUIZ_CREATOR_RESET: {//после отправки очистит поля 
+        case QUIZ_CREATOR_RESET: {
             return {
                 ...state, 
                 quiz: []

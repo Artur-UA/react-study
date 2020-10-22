@@ -2,13 +2,13 @@
     display: flex;
     justify-content: center;
     padding-top: 100px;
-    flex-grow: 1; /*чтобы занимал всю страницу*/
+    flex-grow: 1; 
     width: 100%;
     height: 836px;
     background: linear-gradient(270deg, #cef2fa 0%, #59bfef 100%);
 }
 
-.Auth > div { /*ближайший ребенок к auth */
+.Auth > div { 
     width: 100%;
     max-width: 600px;
     padding: 0 20px;

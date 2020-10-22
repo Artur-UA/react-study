@@ -4,10 +4,10 @@ import {Redirect} from 'react-router-dom'
 import {LogOut} from './../../redux/Action/actionAuth'
 
 class Logout extends Component {
-    componentDidMount(){ //жизненный цикл, когда загрузится дерево.
+    componentDidMount(){ 
         this.props.logOut()
     }
-    render(){ // Redirect перемещает с этой странице на друггую. в нашем случае на главную. типо вылогинились мы 
+    render(){ 
         return <Redirect to= {'/'}/>
     }
 } 

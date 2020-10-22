@@ -10,7 +10,7 @@
 }
 
 .Menu:hover{
-    opacity: .7; /*прозрачность 70%*/
+    opacity: .7; 
 }
 
 .Menu.open {
